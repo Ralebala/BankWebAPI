@@ -1,0 +1,290 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Global Bank - Executive Dashboard</title>
+    <!-- Tailwind CSS Script -->
+    <style>
+        /* Premium, Offline-Ready Dark Mode Stylesheet Override */
+        body {
+            background-color: #0f172a;
+            color: #f1f5f9;
+            font-family: system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            border-b: 1px solid #1e293b;
+            background-color: rgba(15, 23, 42, 0.8);
+            padding: 15px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        main {
+            max-w: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: linear-gradient(180deg, #1e293b, #0f172a);
+            border: 1px solid #334155;
+            padding: 20px;
+            border-radius: 16px;
+            position: relative;
+        }
+
+        .badge {
+            font-size: 10px;
+            font-weight: bold;
+            bg-color: #334155;
+            background: #334155;
+            padding: 3px 8px;
+            rounded: 10px;
+            border-radius: 10px;
+            text-transform: uppercase;
+        }
+
+        .balance {
+            font-size: 28px;
+            font-weight: 900;
+            color: #ffffff;
+            display: block;
+            margin: 10px 0;
+        }
+
+        .engine-box {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid #334155;
+            padding: 25px;
+            border-radius: 16px;
+        }
+
+        input, select {
+            w-full: 100%;
+            width: 90%;
+            background: #0f172a;
+            border: 1px solid #475569;
+            padding: 12px;
+            border-radius: 10px;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .btn-emerald {
+            background: #10b981;
+            color: #0f172a;
+            font-weight: bold;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .btn-slate {
+            background: #475569;
+            color: white;
+            font-weight: bold;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .status-log {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            padding: 15px;
+            border-radius: 16px;
+            margin-top: 20px;
+        }
+
+        .btn-refresh {
+            background: rgba(16, 185, 129, 0.1);
+            color: #34d399;
+            border: 1px solid #10b981;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans flex flex-col items-center">
+
+    <!-- 1. HEADER LOGO ROW (FULLY CENTERED) -->
+    <header class="w-full max-w-5xl px-4 py-6 border-b border-slate-800 text-center">
+        <h1 class="text-2xl font-black text-white tracking-tight">APEX GLOBAL CORE</h1>
+        <span class="text-xs font-bold text-emerald-400 tracking-wider uppercase mt-1 block">● API Port 7137 Connected</span>
+    </header>
+
+    <!-- 2. STABLE MAIN GRID LAYOUT -->
+    <main class="w-full max-w-5xl px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- LEFT WING: ACTIVE REGISTRIES -->
+        <section class="lg:col-span-2 space-y-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-bold text-white tracking-tight">Active Client Registries</h2>
+                <button onclick="fetchBankAccounts()" class="px-3 py-1.5 text-xs font-bold text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 rounded-lg border border-emerald-500/30 transition-all">
+                    Refresh Data
+                </button>
+            </div>
+
+            <!-- This grid div handles your live customer cards injection -->
+            <div id="accounts-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="col-span-2 py-12 text-center text-slate-500 text-sm animate-pulse">
+                    Awaiting server handshake connection transmission...
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT WING: TRANSACTION CONTROL ENGINE -->
+        <aside class="space-y-6">
+            <h2 class="text-lg font-bold text-white tracking-tight">Transaction Execution Control</h2>
+
+            <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-6 backdrop-blur space-y-4">
+                <!-- User Select Dropdown -->
+                <div>
+                    <label class="block text-xs font-semibold tracking-wider text-slate-400 uppercase mb-2">Target Client Account</label>
+                    <select id="transaction-account-select" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors">
+                        <option value="">Choose active user profile...</option>
+                    </select>
+                </div>
+
+                <!-- Cash Value Inputs -->
+                <div>
+                    <label class="block text-xs font-semibold tracking-wider text-slate-400 uppercase mb-2">Transaction Value (ZAR)</label>
+                    <input id="transaction-amount-input" type="number" placeholder="Enter amount (e.g. 500)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors" />
+                </div>
+
+                <!-- Execution Buttons -->
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                    <button onclick="executeTransaction('deposit')" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 text-sm font-bold py-3 px-4 rounded-xl shadow-lg transition-colors">
+                        Deposit Cash
+                    </button>
+                    <button onclick="executeTransaction('withdrawal')" class="w-full bg-slate-700 hover:bg-slate-600 text-white text-sm font-bold py-3 px-4 rounded-xl transition-colors">
+                        Withdraw Cash
+                    </button>
+                </div>
+            </div>
+
+            <!-- STATUS NOTIFICATION ALERTS STATUS LOG -->
+            <div id="status-notification-log" class="hidden border rounded-2xl p-4 text-sm font-semibold text-center transition-all duration-300"></div>
+        </aside>
+    </main>
+
+    <!-- 3. RESTORED CASE-INSENSITIVE HANDSHAKE ROUTING SCRIPTS -->
+    <script>
+        // Utilizing a bulletproof relative URL addressing pathway
+        const API_URL = "/api/Accounts";
+
+        async function fetchBankAccounts() {
+            try {
+                const response = await fetch(API_URL);
+                const accountsList = await response.json();
+
+                const gridContainer = document.getElementById("accounts-grid-container");
+                const dropdownSelect = document.getElementById("transaction-account-select");
+
+                gridContainer.innerHTML = "";
+                dropdownSelect.innerHTML = '<option value="">Choose active user profile...</option>';
+
+                accountsList.forEach(account => {
+                    // Fallback wrappers to account for both lowercase and uppercase json naming schemas natively
+                    const rawRate = account.interestRate !== undefined ? account.interestRate : account.interestrate;
+                    const cleanRate = rawRate ? (rawRate * 100).toFixed(1) + '%' : '0.0%';
+
+                    const rawEmail = account.emailAddress !== undefined ? account.emailAddress : account.emailaddress;
+                    const cleanEmail = rawEmail || 'customer@bank.com';
+
+                    const rawType = account.accountType !== undefined ? account.accountType : account.accounttype;
+                    const cleanType = rawType || 'Savings';
+
+                    // Build and inject individual registry balance profile view cards
+                    const cardMarkup = `
+                            <div class="bg-gradient-to-b from-slate-800/80 to-slate-800/30 border border-slate-700/60 rounded-2xl p-6 relative overflow-hidden group hover:border-slate-600 transition-all duration-200">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div>
+                                        <span class="text-[10px] font-bold bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full uppercase tracking-wider">ID: ${account.id}</span>
+                                        <h3 class="text-base font-bold text-white mt-1">${account.accountHolder}</h3>
+                                    </div>
+                                    <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/10 uppercase tracking-wider">${cleanType}</span>
+                                </div>
+                                <div class="mt-2">
+                                    <span class="text-xs text-slate-400 block tracking-wider uppercase">System Account Balance</span>
+                                    <span class="text-2xl font-black text-white tracking-tight">R ${account.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                </div>
+                                <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-xs text-slate-400">
+                                    <span>Rate: ${cleanRate}</span>
+                                    <span class="truncate max-w-[140px]" title="${cleanEmail}">${cleanEmail}</span>
+                                </div>
+                            </div>
+                        `;
+                    gridContainer.innerHTML += cardMarkup;
+
+                    // Load matching options to target dropdown field cells
+                    const optionMarkup = `<option value="${account.id}">${account.accountHolder} (ID: ${account.id})</option>`;
+                    dropdownSelect.innerHTML += optionMarkup;
+                });
+            } catch (error) {
+                console.error("[HANDSHAKE FAILED] Backend engine registry connection offline:", error);
+            }
+        }
+
+        async function executeTransaction(transactionType) {
+            const id = document.getElementById("transaction-account-select").value;
+            const amount = document.getElementById("transaction-amount-input").value;
+
+            if (!id || !amount || amount <= 0) {
+                showLog("Please pick a valid profile entry and enter a positive cash value amount.", "error");
+                return;
+            }
+
+            try {
+                const targetEndpoint = `${API_URL}/${transactionType}?id=${id}&amount=${amount}`;
+                const response = await fetch(targetEndpoint, { method: "POST" });
+                const textMessage = await response.text();
+
+                if (response.ok) {
+                    showLog(textMessage, "success");
+                    document.getElementById("transaction-amount-input").value = "";
+                    fetchBankAccounts(); // Automatically triggers live balance map refresh!
+                } else {
+                    showLog(textMessage, "error");
+                }
+            } catch (error) {
+                showLog("Network pipeline timeout error. Verify your Web API server status.", "error");
+            }
+        }
+
+        function showLog(message, variant) {
+            const logBox = document.getElementById("status-notification-log");
+            logBox.classList.remove("hidden", "bg-emerald-500/10", "border-emerald-500/20", "text-emerald-400", "bg-rose-500/10", "border-rose-500/20", "text-rose-400");
+
+            if (variant === "success") {
+                logBox.classList.add("bg-emerald-500/10", "border-emerald-500/20", "text-emerald-400");
+            } else {
+                logBox.classList.add("bg-rose-500/10", "border-rose-500/20", "text-rose-400");
+            }
+            logBox.innerText = message;
+        }
+
+        window.onload = fetchBankAccounts;
+    </script>
+</body>
+</html>
